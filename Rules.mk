@@ -46,3 +46,6 @@ podchecker:
 check:
 	@for f in $(ALL_PERL_MODULES); do $(FULLPERLRUN) -c $$f; done
 	@for f in $(ALL_PERL_SCRIPTS); do $(PERL) -c $$f; done
+
+clean ::
+	rm -f Makefile.old
