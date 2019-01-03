@@ -1,7 +1,7 @@
 Pro'sKit MT1820 Multimeter Probe
 ================================
 
-Connect your multimeter [https://www.prokits.com.tw/Product/MT-1820/](Pro'sKit MT-1820) to your linux computer and read data over USB cable.
+Connect your multimeter [Pro'sKit MT-1820](https://www.prokits.com.tw/Product/MT-1820/) to your linux computer and read data over USB cable.
 
 ![Pro'sKit MT1820](https://ref.prokits.com.tw/ProductPic/MT-1820/1/20180531174031219179.jpg)
 
