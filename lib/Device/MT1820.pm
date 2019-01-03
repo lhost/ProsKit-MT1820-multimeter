@@ -51,6 +51,11 @@ my $unit_map	= {
 		symbol	=> '˚C',
 		factor	=> 1,
 	},
+	0x0001	=> {
+		unit	=> 'temperature',
+		symbol	=> '˚F',
+		factor	=> 1,
+	},
 
 };
 
@@ -91,6 +96,8 @@ my $unit_map	= {
 
 	>>> parse_data("\x{2b}\x{30}\x{32}\x{35}\x{33}\x{20}\x{34}\x{20}\x{00}\x{00}\x{02}\x{00}");
 	'temperature 25.3 25.3 ˚C 0% [ 8192 ]'
+	>>> parse_data("\x{2b}\x{30}\x{39}\x{38}\x{34}\x{20}\x{34}\x{20}\x{00}\x{00}\x{01}\x{00}");
+	'temperature 98.4 98.4 ˚F 0% [ 8192 ]'
 
 =cut
 
