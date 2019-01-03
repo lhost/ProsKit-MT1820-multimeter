@@ -54,11 +54,12 @@ Connect your multimeter [Pro'sKit MT-1820](https://www.prokits.com.tw/Product/MT
 | Capacitance	| 200μF		| 			|
 | Temperature	| -20˚C		| 			|
 | Temperature	| 0˚C		| 			|
-| Temperature	| 20˚C		| 			|
+| Temperature	| 20˚C		| Y			|
 | Temperature	| 100˚C		| 			|
 | Temperature	| 400˚C		| 			|
 | Temperature	| 1000˚C	| 			|
 | Temperature	| 0˚F		| 			|
+| Temperature	| 100˚F		| Y			|
 | Temperature	| 750˚F		| 			|
 | Continuity with buzzer		| 		| 			|
 | Diode test		| 		| 			|
