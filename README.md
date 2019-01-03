@@ -100,6 +100,35 @@ make unittest
 ./bin/multimeter-read.pl /dev/ttyUSB0
 ```
 
+## Debugging
+
+If your multimeter is recognised by linux kernel, the following message should appear in `dmesg` output:
+
+     usb 1-11: new full-speed USB device number 6 using xhci_hcd
+     usb 1-11: New USB device found, idVendor=10c4, idProduct=ea60
+     usb 1-11: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+     usb 1-11: Product: CP2102 USB to UART Bridge Controller
+     usb 1-11: Manufacturer: Silicon Labs
+     usb 1-11: SerialNumber: 0001
+     cp210x 1-11:1.0: cp210x converter detected
+     usb 1-11: cp210x converter now attached to ttyUSB0
+
+and you should see the following USB device:
+
+```bash
+# lsusb | grep -i cp210x
+Bus 001 Device 006: ID 10c4:ea60 Cygnal Integrated Products, Inc. CP210x UART Bridge / myAVR mySmartUSB light
+
+# ls -la /dev/ttyUSB0
+crw-rw---- 1 root dialout 188, 0 Jan  3 23:14 /dev/ttyUSB0
+```
+You can use standard serial port terminal to see binary data from you serial device:
+
+```bash
+minicom --baudrate 2400 -D /dev/ttyUSB0
+```
+- use **CTRL-a x** keys to exit minicom
+
 ## Original Windows software
 
 Windows binary `handcom1820_1860.exe` can be started with `wine`.
