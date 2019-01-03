@@ -30,20 +30,20 @@ use constant UNIT_mA => 0x4040;
 use constant UNIT_A => 0x0040;
 
 # with help from https://github.com/drahoslavzan/ProsKit-MT1820-Probe/blob/master/proskit.cc#L28
-my $value_map	= {
+my $unit_map	= {
 	0x0020	=> {
-		par	=> 'resistance',
-		desc	=> 'Ohm',
-		factor	=> 1E0,
+		unit	=> 'resistance',
+		symbol	=> 'Ohm',
+		factor	=> 1,
 	},
 	0x2020	=> {
-		par	=> 'resistance',
-		desc	=> 'kOhm',
+		unit	=> 'resistance',
+		symbol	=> 'kOhm',
 		factor	=> 1E3,
 	},
 	0x1020	=> {
-		par	=> 'resistance',
-		desc	=> 'MOhm',
+		unit	=> 'resistance',
+		symbol	=> 'MOhm',
 		factor	=> 1E6,
 	},
 };
@@ -55,6 +55,7 @@ my $value_map	= {
 	Test::Doctest
 	>>> parse_data("\x{2b}\x{3f}\x{30}\x{3a}\x{3f}\x{20}\x{34}\x{21}\x{00}\x{00}\x{20}\x{3d}");
 	"undefined data '+?0:?'"
+
 	>>> parse_data("+0096 4!\0\0 \0");
 	'resistance 9.6 9.6 Ohm 0% [ 8448 ]'
 	>>> parse_data("\x{2b}\x{30}\x{31}\x{30}\x{32}\x{20}\x{34}\x{21}\x{00}\x{00}\x{20}\x{01}");
@@ -108,7 +109,7 @@ sub parse_data {
 #	print Dumper([
 #			$string_value, $_space, $decimal_point, $flags, $unit, $meter, $_unknown,
 #		]);
-#	print Dumper( [ $unit, $value_map, $value_map->{$unit} ] );
+#	print Dumper( [ $unit, $unit_map, $unit_map->{$unit} ] );
 	if ( substr( $data, 0, 2 ) eq '+?' ) {
 		return "undefined data '$string_value'";
 	}
@@ -125,10 +126,12 @@ sub parse_data {
 				. ( substr( $string_value, 1, $decimal_point ) || 0 ) . '.'
 				. substr( $string_value, $decimal_point + 1 )
 		);
-		my $vm = $value_map->{$unit};
-		return "$vm->{par} "
+		my $vm = $unit_map->{$unit};
+
+		return "undefined measurement '$string_value', unit = $unit" unless $vm;
+		return "$vm->{unit} "
 			. $value * $vm->{factor}
-			. " $value $vm->{desc} $meter% [ $flags ]";
+			. " $value $vm->{symbol} $meter% [ $flags ]";
 	}
 }
 
