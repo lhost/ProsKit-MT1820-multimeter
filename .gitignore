@@ -1,0 +1,8 @@
+Makefile
+*.old
+.*.sw?
+blib
+pm_to_blib
+MYMETA.*
+lib/auto
+**/.exists
