@@ -100,6 +100,14 @@ make unittest
 ./bin/multimeter-read.pl /dev/ttyUSB0
 ```
 
+For other options see help and/or manual page:
+
+```bash
+./bin/multimeter-read.pl --help
+./bin/multimeter-read.pl --man
+```
+
+
 ## Debugging
 
 If your multimeter is recognised by linux kernel, the following message should appear in `dmesg` output:
