@@ -6,9 +6,11 @@ Connect your multimeter [Pro'sKit MT-1820](https://www.prokits.com.tw/Product/MT
 
 ## Features
 
-`multimeter-read.pl` script is tested with following multimeter:
+`multimeter-read.pl` script is tested with following multimeter(s):
 
-| Specification	| Range	| MT-1820	|
+- Models MT-1820 - MT-1860 have the same Windows drivers and documentation. They should work with this software, but they are not tested yet.
+
+| Specification	| Range	| [MT-1820](https://www.prokits.com.tw/Product/MT-1820/)	|
 |---			|---:	|:---:		|
 | DCV			| 600mV	| 			|
 | DCV			| 6V	| 			|
@@ -18,7 +20,7 @@ Connect your multimeter [Pro'sKit MT-1820](https://www.prokits.com.tw/Product/MT
 | ACV			| 6V	| 			|
 | ACV			| 60V	| 			|
 | ACV			| 600V	| 			|
-| ACV			| 750V	| TBD	D	|
+| ACV			| 750V	| TBD		|
 | DCA			| 600μA	|  			|
 | DCA			| 6mA	|  			|
 | DCA			| 60mA	|  			|
@@ -45,11 +47,11 @@ Connect your multimeter [Pro'sKit MT-1820](https://www.prokits.com.tw/Product/MT
 | Frequency		| 100kHz	| 			|
 | Frequency		| 1MHz		| 			|
 | Frequency		| 30MHz		| 			|
-| Cpacitance	| 40nF		| 			|
-| Cpacitance	| 400nF		| 			|
-| Cpacitance	| 4μF		| 			|
-| Cpacitance	| 40μF		| 			|
-| Cpacitance	| 200μF		| 			|
+| Capacitance	| 40nF		| 			|
+| Capacitance	| 400nF		| 			|
+| Capacitance	| 4μF		| 			|
+| Capacitance	| 40μF		| 			|
+| Capacitance	| 200μF		| 			|
 | Temperature	| -20˚C		| 			|
 | Temperature	| 0˚C		| 			|
 | Temperature	| 20˚C		| 			|
