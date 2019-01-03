@@ -46,6 +46,12 @@ my $unit_map	= {
 		symbol	=> 'MOhm',
 		factor	=> 1E6,
 	},
+	0x0002	=> {
+		unit	=> 'temperature',
+		symbol	=> '˚C',
+		factor	=> 1,
+	},
+
 };
 
 =head1 parse_data
@@ -82,6 +88,9 @@ my $unit_map	= {
 	'resistance 21110000 21.11 MOhm 21% [ 8448 ]'
 	>>> parse_data("\x{2b}\x{35}\x{39}\x{33}\x{37}\x{20}\x{32}\x{21}\x{00}\x{10}\x{20}\x{3b}");
 	'resistance 59370000 59.37 MOhm 59% [ 8448 ]'
+
+	>>> parse_data("\x{2b}\x{30}\x{32}\x{35}\x{33}\x{20}\x{34}\x{20}\x{00}\x{00}\x{02}\x{00}");
+	'temperature 25.3 25.3 ˚C 0% [ 8192 ]'
 
 =cut
 
