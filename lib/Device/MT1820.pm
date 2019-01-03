@@ -9,7 +9,9 @@ our $VERSION = '0.01';
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw( parse_data );
 
-my $DEBUG = 0;
+use vars qw( $DEBUG );
+
+$DEBUG = 0;
 
 #use Data::Dumper;
 #$Data::Dumper::Useqq = 1;
@@ -114,7 +116,7 @@ sub parse_data {
 # 		11       Meter at bottom of display, signed value
 	if ($DEBUG) {
 		#print Dumper( $data );
-		print STDERR "\t>>> parse_data(\"",
+		print STDERR ">>> parse_data(\"",
 		( map { "\\x{" . unpack("H*") . "}" } split( //, $data ) ),
 		"\");\n";
 	}
