@@ -13,9 +13,6 @@ use vars qw( $DEBUG );
 
 $DEBUG = 0;
 
-#use Data::Dumper;
-#$Data::Dumper::Useqq = 1;
-
 use constant UNIT_hFE => 0x0010;
 use constant UNIT_mV => 0x4080;
 use constant UNIT_V => 0x0080;
@@ -208,7 +205,6 @@ sub parse_data {
 # 		09 - 10  Unit, byte is 09 scale factor (u,m,M) of unit on byte 10
 # 		11       Meter at bottom of display, signed value
 	if ($DEBUG) {
-		#print Dumper( $data );
 		print STDERR ">>> parse_data(\"",
 		( map { "\\x{" . unpack("H*") . "}" } split( //, $data ) ),
 		"\");\n";
@@ -218,6 +214,7 @@ sub parse_data {
 	= unpack( 'A5 A1 A1 n n c', $data );
 
 #	use Data::Dumper;
+#	$Data::Dumper::Useqq = 1;
 #	print Dumper([
 #			$string_value, $_space, $decimal_point, $flags, $unit, $meter,
 #		]);
