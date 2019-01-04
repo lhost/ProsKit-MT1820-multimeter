@@ -12,26 +12,27 @@ Connect your multimeter [Pro'sKit MT-1820](https://www.prokits.com.tw/Product/MT
 
 | Specification	| Range	| [MT-1820](https://www.prokits.com.tw/Product/MT-1820/)	|
 |---			|---:	|:---:		|
-| DCV			| 600mV	| 			|
-| DCV			| 6V	| 			|
+| DCV			| 600mV	| Y			|
+| DCV			| 6V	| Y			|
 | DCV			| 60V	| 			|
 | DCV			| 600V	| 			|
-| DCV			| 1000V	| TBD		|
-| ACV			| 6V	| 			|
+| DCV			| 1000V	| 			|
+| ACV			| 600mV	| Y			|
+| ACV			| 6V	| Y			|
 | ACV			| 60V	| 			|
-| ACV			| 600V	| 			|
-| ACV			| 750V	| TBD		|
-| DCA			| 600μA	|  			|
-| DCA			| 6mA	|  			|
-| DCA			| 60mA	|  			|
-| DCA			| 600mA	|  			|
-| DCA			| 6A	|  			|
+| ACV			| 600V	| Y			|
+| ACV			| 750V	| 			|
+| DCA			| 600μA	| Y			|
+| DCA			| 6mA	| Y			|
+| DCA			| 60mA	| Y			|
+| DCA			| 600mA	| Y			|
+| DCA			| 6A	| Y			|
 | DCA			| 10A	|  			|
 | ACA			| 600μA	|  			|
-| ACA			| 6mA	|  			|
-| ACA			| 60mA	|  			|
-| ACA			| 600mA	|  			|
-| ACA			| 6A	|  			|
+| ACA			| 6mA	| Y			|
+| ACA			| 60mA	| Y			|
+| ACA			| 600mA	| Y			|
+| ACA			| 6A	| Y			|
 | ACA			| 10A	|  			|
 | Resistance	| 6Ω	| Y			|
 | Resistance	| 60Ω	| Y			|

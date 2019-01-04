@@ -58,7 +58,41 @@ my $unit_map	= {
 		symbol	=> '˚F',
 		factor	=> 1,
 	},
+	0x4080	=> {
+		unit	=> 'voltage',
+		symbol	=> 'mV',
+		factor	=> 1E-3,
+	},
+	0x0080	=> {
+		unit	=> 'voltage',
+		symbol	=> 'V',
+		factor	=> 1,
+	},
+	0x8040	=> {
+		unit	=> 'current',
+		symbol	=> 'μA',
+		factor	=> 1E-6,
+	},
+	0x4040	=> {
+		unit	=> 'current',
+		symbol	=> 'mA',
+		factor	=> 1E-3,
+	},
+	0x0040	=> {
+		unit	=> 'current',
+		symbol	=> 'A',
+		factor	=> 1,
+	},
 
+};
+
+my $flags_map = {
+	0x2900	=> {
+		desc	=> 'AC', # alternating current
+	},
+	0x3100	=> {
+		desc	=> 'DC', # direct current
+	},
 };
 
 =head1 parse_data
@@ -101,6 +135,65 @@ my $unit_map	= {
 	>>> parse_data("\x{2b}\x{30}\x{39}\x{38}\x{34}\x{20}\x{34}\x{20}\x{00}\x{00}\x{01}\x{00}");
 	'temperature 98.4 98.4 ˚F 0% [ 8192 ]'
 
+	>>> parse_data("\x{2b}\x{34}\x{32}\x{35}\x{39}\x{20}\x{34}\x{31}\x{00}\x{40}\x{80}\x{2a}");
+	'voltage-DC 0.4259 425.9 mV 42% [ DC ]'
+	>>> parse_data("\x{2b}\x{34}\x{35}\x{30}\x{31}\x{20}\x{31}\x{31}\x{00}\x{00}\x{80}\x{2d}");
+	'voltage-DC 4.501 4.501 V 45% [ DC ]'
+
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{30}\x{20}\x{31}\x{29}\x{00}\x{00}\x{80}\x{00}");
+	'voltage-AC 0 0 V 0% [ AC ]'
+	>>> parse_data("\x{2b}\x{32}\x{32}\x{32}\x{30}\x{20}\x{31}\x{29}\x{00}\x{00}\x{80}\x{0b}");
+	'voltage-AC 2.22 2.22 V 11% [ AC ]'
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{36}\x{34}\x{20}\x{31}\x{29}\x{00}\x{00}\x{80}\x{00}");
+	'voltage-AC 0.064 0.064 V 0% [ AC ]'
+	>>> parse_data("\x{2b}\x{32}\x{32}\x{35}\x{35}\x{20}\x{34}\x{29}\x{00}\x{00}\x{80}\x{00}");
+	'voltage-AC 225.5 225.5 V 0% [ AC ]'
+
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{30}\x{20}\x{34}\x{31}\x{00}\x{80}\x{40}\x{00}");
+	'current-DC 0 0 μA 0% [ DC ]'
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{35}\x{36}\x{20}\x{34}\x{31}\x{00}\x{80}\x{40}\x{00}");
+	'current-DC 5.6e-06 5.6 μA 0% [ DC ]'
+	>>> parse_data("\x{2b}\x{30}\x{32}\x{38}\x{39}\x{20}\x{34}\x{31}\x{00}\x{80}\x{40}\x{02}");
+	'current-DC 2.89e-05 28.9 μA 2% [ DC ]'
+	>>> parse_data("\x{2d}\x{34}\x{38}\x{39}\x{37}\x{20}\x{34}\x{31}\x{00}\x{80}\x{40}\x{b0}");
+	'current-DC -0.0004897 -489.7 μA -80% [ DC ]'
+	>>> parse_data("\x{2d}\x{35}\x{31}\x{36}\x{30}\x{20}\x{34}\x{31}\x{00}\x{80}\x{40}\x{b3}");
+	'current-DC -0.000516 -516 μA -77% [ DC ]'
+
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{30}\x{20}\x{32}\x{31}\x{00}\x{40}\x{40}\x{00}");
+	'current-DC 0 0 mA 0% [ DC ]'
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{30}\x{20}\x{32}\x{31}\x{00}\x{40}\x{40}\x{80}");
+	'current-DC 0 0 mA -128% [ DC ]'
+	>>> parse_data("\x{2b}\x{30}\x{36}\x{31}\x{33}\x{20}\x{34}\x{31}\x{00}\x{40}\x{40}\x{06}");
+	'current-DC 0.0613 61.3 mA 6% [ DC ]'
+	>>> parse_data("\x{2d}\x{35}\x{30}\x{36}\x{39}\x{20}\x{32}\x{31}\x{00}\x{40}\x{40}\x{b2}");
+	'current-DC -0.05069 -50.69 mA -78% [ DC ]'
+
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{30}\x{20}\x{31}\x{31}\x{00}\x{00}\x{40}\x{00}");
+	'current-DC 0 0 A 0% [ DC ]'
+	'current-DC 3.033 3.033 A 30% [ DC ]'
+	2019-01-04 01:27:59.348 current-DC 3.033 3.033 A 30% [ DC ]
+	>>> parse_data("\x{2b}\x{32}\x{39}\x{32}\x{32}\x{20}\x{31}\x{31}\x{00}\x{00}\x{40}\x{1d}");
+	'current-DC 2.922 2.922 A 29% [ DC ]'
+
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{31}\x{20}\x{32}\x{29}\x{00}\x{40}\x{40}\x{00}");
+	'current-AC 1e-05 0.01 mA 0% [ AC ]'
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{32}\x{20}\x{32}\x{29}\x{00}\x{40}\x{40}\x{00}");
+	'current-AC 2e-05 0.02 mA 0% [ AC ]'
+	>>> parse_data("\x{2b}\x{30}\x{34}\x{30}\x{35}\x{20}\x{32}\x{29}\x{00}\x{40}\x{40}\x{00}");
+	'current-AC 0.00405 4.05 mA 0% [ AC ]'
+	>>> parse_data("\x{2b}\x{32}\x{33}\x{32}\x{30}\x{20}\x{32}\x{29}\x{00}\x{40}\x{40}\x{0f}");
+	'current-AC 0.0232 23.2 mA 15% [ AC ]'
+
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{30}\x{20}\x{31}\x{29}\x{00}\x{00}\x{40}\x{00}");
+	'current-AC 0 0 A 0% [ AC ]'
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{31}\x{20}\x{31}\x{29}\x{00}\x{00}\x{40}\x{00}");
+	'current-AC 0.001 0.001 A 0% [ AC ]'
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{32}\x{38}\x{20}\x{31}\x{29}\x{00}\x{00}\x{40}\x{0a}");
+	'current-AC 0.028 0.028 A 10% [ AC ]'
+	>>> parse_data("\x{2b}\x{31}\x{32}\x{35}\x{36}\x{20}\x{31}\x{29}\x{00}\x{00}\x{40}\x{14}");
+	'current-AC 1.256 1.256 A 20% [ AC ]'
+
 =cut
 
 sub parse_data {
@@ -135,7 +228,10 @@ sub parse_data {
 	else {
 		if ($decimal_point == 4
 				and ( substr( $data, 0, 2 ) eq '+0'
-					or ( 0.0 + $string_value > 1000.0 ) )
+					or substr( $data, 0, 2 ) eq '-0'
+					or 0.0 + $string_value > 1000.0
+					or 0.0 + $string_value < -1000.0
+				)
 		) {
 			$decimal_point = 3;
 		}
@@ -146,11 +242,16 @@ sub parse_data {
 				. substr( $string_value, $decimal_point + 1 )
 		);
 		my $vm = $unit_map->{$unit};
+		my $fm = $flags_map->{$flags};
 
 		return "undefined measurement '$string_value', unit = $unit" unless $vm;
-		return "$vm->{unit} "
+		return $vm->{unit} . (
+			$fm ? "-$fm->{desc} " : ' '
+			)
 			. $value * $vm->{factor}
-			. " $value $vm->{symbol} $meter% [ $flags ]";
+			. " $value $vm->{symbol} $meter% [ "
+				. ($fm->{desc} || $flags)
+			. " ]";
 	}
 }
 
