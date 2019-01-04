@@ -7,6 +7,7 @@ use English;
 use Getopt::Long qw(:config no_auto_abbrev no_ignore_case );
 use Pod::Usage;
 use Time::HiRes qw( time usleep);
+use Data::Dumper;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 
@@ -21,6 +22,7 @@ use vars qw(
 	$DEBUG
 	$device $port
 	$help $man $verbose
+	$stat
 );
 
 $VERSION = 0.1;
@@ -33,6 +35,7 @@ my $rv = GetOptions(
 	'help'		=> \$help,
 	'man'		=> \$man,
 	'verbose'	=> \$verbose,
+	's|stat'	=> \$stat,
 ) or pod2usage({ q(-verbose) => 1, q(-message) => 'ERROR: Invalid parameter' } );
 
 
@@ -74,6 +77,11 @@ sub timestr {    # {{{
 	return $text;
 }    # }}}
 
+if ($stat) {
+	$Data::Dumper::Sortkeys = 1;
+	$stat = {}; # change from scalar to hash. Ugly hack
+}
+
 my $buffer = '';
 
 # skip first incomplete data
@@ -95,12 +103,21 @@ while (1) {
 	  die "Read error: $!" unless defined ($string_in);
 	  $buffer .= $string_in;
 	  if (length($buffer) >= PROTOCOL_LENGTH) {
-		  my $time = timestr();
 		  my $data = substr($buffer, 0, PROTOCOL_LENGTH - SEPARATOR_LENGTH);
 		  $buffer = substr($buffer, PROTOCOL_LENGTH);
-		  my $parsed_data = parse_data($data);
-		  print STDERR "'$parsed_data'\n" if ($DEBUG);
-		  print "$time $parsed_data\n";
+
+		  if ($stat) {
+			  my ($parsed_data, $encoded_data) = parse_data($data);
+			  $stat->{$encoded_data} ||= { count => 0, output => $parsed_data };
+			  $stat->{$encoded_data}->{count} += 1;
+			  print Dumper($stat);
+		  }
+		  else {
+			  my $parsed_data = parse_data($data);
+			  my $time = timestr();
+			  print STDERR "'$parsed_data'\n" if ($DEBUG);
+			  print "$time $parsed_data\n";
+		  }
 
 	  }
 	  else {
@@ -153,6 +170,10 @@ Turn on debugging. Raw binary data are dumped to the STDERR and parsing can be c
 =item B<--device>
 
 Change device for serial connection. Default value is B</dev/ttyUSB0> on Linux and B<COM1> on Windows.
+
+=item B<--stat>
+
+Run in statistics mode. Used with debug mode to capture all measured data and count number of unique values.
 
 =back
 

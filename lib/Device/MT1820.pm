@@ -221,6 +221,7 @@ my $flags_map = {
 
 sub parse_data {
 	my ($data) = @_;
+	my $doctest;
 
 # 	BYTE:
 # 		00       Sign +-
@@ -230,10 +231,12 @@ sub parse_data {
 # 		07 - 08  Flags 08 only in Farrad maybe belong to unit -  AC / DC indicator
 # 		09 - 10  Unit, byte is 09 scale factor (u,m,M) of unit on byte 10
 # 		11       Meter at bottom of display, signed value
-	if ($DEBUG) {
-		print STDERR ">>> parse_data(\"",
+	$doctest = join('', ">>> parse_data(\"",
 		( map { "\\x{" . unpack("H*") . "}" } split( //, $data ) ),
-		"\");\n";
+		"\");"
+	);
+	if ($DEBUG) {
+		print STDERR "$doctest\n";
 	}
 
 	my ( $string_value, $_space, $decimal_point, $flags, $unit, $meter )
@@ -246,7 +249,8 @@ sub parse_data {
 #		]);
 #	print Dumper( [ $unit,  $unit_map->{$unit} ] );
 	if ( substr( $data, 0, 2 ) eq '+?' ) {
-		return "undefined data '$string_value'";
+		my $rv = "undefined data '$string_value'";
+		return wantarray ? ($rv, $doctest) : $rv;
 	}
 	else {
 		if ($decimal_point == 4
@@ -267,14 +271,18 @@ sub parse_data {
 		my $vm = $unit_map->{$unit};
 		my $fm = $flags_map->{$flags};
 
-		return "undefined measurement '$string_value', unit = $unit" unless $vm;
-		return $vm->{unit} . (
+		unless ($vm) {
+			my $rv = "undefined measurement '$string_value', unit = $unit";
+			return wantarray ? ($rv, $doctest) : $rv;
+		}
+		my $rv = $vm->{unit} . (
 			$fm ? "-$fm->{desc} " : ' '
 			)
 			. $value * $vm->{factor}
 			. " $value $vm->{symbol} $meter% [ "
 				. ($fm->{desc} || $flags)
 			. " ]";
+		return wantarray ? ($rv, $doctest) : $rv;
 	}
 }
 
