@@ -124,10 +124,11 @@ sub parse_data {
 	my ( $string_value, $_space, $decimal_point, $flags, $unit, $meter )
 	= unpack( 'A5 A1 A1 n n c', $data );
 
+#	use Data::Dumper;
 #	print Dumper([
-#			$string_value, $_space, $decimal_point, $flags, $unit, $meter, $_unknown,
+#			$string_value, $_space, $decimal_point, $flags, $unit, $meter,
 #		]);
-#	print Dumper( [ $unit, $unit_map, $unit_map->{$unit} ] );
+#	print Dumper( [ $unit,  $unit_map->{$unit} ] );
 	if ( substr( $data, 0, 2 ) eq '+?' ) {
 		return "undefined data '$string_value'";
 	}
