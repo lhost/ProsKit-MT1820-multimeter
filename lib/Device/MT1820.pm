@@ -201,7 +201,7 @@ sub parse_data {
 # 		01 - 04  Value, ie. 4 digits from left to right as in display
 # 		05       ?
 # 		06       Decimal point
-# 		07 - 08  Flags 08 only in Farrad maybe belong to unit
+# 		07 - 08  Flags 08 only in Farrad maybe belong to unit -  AC / DC indicator
 # 		09 - 10  Unit, byte is 09 scale factor (u,m,M) of unit on byte 10
 # 		11       Meter at bottom of display, signed value
 	if ($DEBUG) {
