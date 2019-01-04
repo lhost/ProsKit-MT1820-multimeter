@@ -42,12 +42,12 @@ Connect your multimeter [Pro'sKit MT-1820](https://www.prokits.com.tw/Product/MT
 | Resistance	| 600kΩ	| Y			|
 | Resistance	| 6MΩ	| Y			|
 | Resistance	| 60MΩ	| Y			|
-| Frequency		| 100Hz	| 			|
-| Frequency		| 1kHz	| 			|
-| Frequency		| 10kHz	| 			|
-| Frequency		| 100kHz	| 			|
-| Frequency		| 1MHz		| 			|
-| Frequency		| 30MHz		| 			|
+| Frequency		| 100Hz	| Y			|
+| Frequency		| 1kHz	| Y			|
+| Frequency		| 10kHz	| Y			|
+| Frequency		| 100kHz	| Y			|
+| Frequency		| 1MHz		| TBD		|
+| Frequency		| 30MHz		| TBD		|
 | Capacitance	| 40nF		| 			|
 | Capacitance	| 400nF		| 			|
 | Capacitance	| 4μF		| 			|

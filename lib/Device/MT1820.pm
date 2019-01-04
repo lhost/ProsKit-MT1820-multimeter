@@ -90,7 +90,21 @@ my $unit_map	= {
 		symbol	=> 'Ohm',
 		factor	=> 1,
 	},
-
+	0x0008	=> {
+		unit	=> 'frequency',
+		symbol	=> 'Hz',
+		factor	=> 1,
+	},
+	0x2008	=> {
+		unit	=> 'frequency',
+		symbol	=> 'kHz',
+		factor	=> 1E3,
+	},
+	0x1008	=> { # TODO: test frequency measurement for MHz signal
+		unit	=> 'frequency',
+		symbol	=> 'MHz',
+		factor	=> 1E6,
+	},
 };
 
 my $flags_map = {
@@ -216,6 +230,26 @@ my $flags_map = {
 	'diode-test 0 0 V 0% [ 0 ]'
 	>>> parse_data("\x{2b}\x{31}\x{38}\x{34}\x{32}\x{20}\x{31}\x{00}\x{00}\x{04}\x{80}\x{00}");
 	'diode-test 1.842 1.842 V 0% [ 0 ]'
+
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{30}\x{20}\x{31}\x{20}\x{00}\x{00}\x{08}\x{3d}");
+	'frequency 0 0 Hz 61% [ 8192 ]'
+	>>> parse_data("\x{2b}\x{30}\x{35}\x{36}\x{38}\x{20}\x{31}\x{20}\x{00}\x{00}\x{08}\x{3d}");
+	'frequency 0.568 0.568 Hz 61% [ 8192 ]'
+	>>> parse_data("\x{2b}\x{33}\x{36}\x{33}\x{36}\x{20}\x{31}\x{20}\x{00}\x{00}\x{08}\x{3d}");
+	'frequency 3.636 3.636 Hz 61% [ 8192 ]'
+	>>> parse_data("\x{2b}\x{31}\x{33}\x{30}\x{39}\x{20}\x{34}\x{20}\x{00}\x{00}\x{08}\x{3d}");
+	'frequency 130.9 130.9 Hz 61% [ 8192 ]'
+	>>> parse_data("\x{2b}\x{39}\x{38}\x{34}\x{31}\x{20}\x{34}\x{20}\x{00}\x{00}\x{08}\x{3d}");
+	'frequency 984.1 984.1 Hz 61% [ 8192 ]'
+	>>> parse_data("\x{2b}\x{31}\x{30}\x{34}\x{35}\x{20}\x{31}\x{20}\x{00}\x{20}\x{08}\x{3d}");
+	'frequency 1045 1.045 kHz 61% [ 8192 ]'
+	>>> parse_data("\x{2b}\x{37}\x{34}\x{39}\x{37}\x{20}\x{31}\x{20}\x{00}\x{20}\x{08}\x{3d}");
+	'frequency 7497 7.497 kHz 61% [ 8192 ]'
+	>>> parse_data("\x{2b}\x{31}\x{33}\x{32}\x{39}\x{20}\x{32}\x{20}\x{00}\x{20}\x{08}\x{3d}");
+	'frequency 13290 13.29 kHz 61% [ 8192 ]'
+	>>> parse_data("\x{2b}\x{31}\x{36}\x{39}\x{34}\x{20}\x{34}\x{20}\x{00}\x{20}\x{08}\x{3d}");
+	'frequency 169400 169.4 kHz 61% [ 8192 ]'
+
 
 =cut
 
