@@ -80,6 +80,16 @@ my $unit_map	= {
 		symbol	=> 'A',
 		factor	=> 1,
 	},
+	0x0480	=> {
+		unit	=> 'diode-test',
+		symbol	=> 'V',
+		factor	=> 1,
+	},
+	0x0820	=> {
+		unit	=> 'continuity-test',
+		symbol	=> 'Ohm',
+		factor	=> 1,
+	},
 
 };
 
@@ -190,6 +200,22 @@ my $flags_map = {
 	'current-AC 0.028 0.028 A 10% [ AC ]'
 	>>> parse_data("\x{2b}\x{31}\x{32}\x{35}\x{36}\x{20}\x{31}\x{29}\x{00}\x{00}\x{40}\x{14}");
 	'current-AC 1.256 1.256 A 20% [ AC ]'
+
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{31}\x{20}\x{34}\x{01}\x{00}\x{08}\x{20}\x{00}");
+	'continuity-test 0.1 0.1 Ohm 0% [ 256 ]'
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{32}\x{20}\x{34}\x{01}\x{00}\x{08}\x{20}\x{00}");
+	'continuity-test 0.2 0.2 Ohm 0% [ 256 ]'
+	>>> parse_data("\x{2b}\x{30}\x{32}\x{33}\x{36}\x{20}\x{34}\x{01}\x{00}\x{08}\x{20}\x{02}");
+	'continuity-test 23.6 23.6 Ohm 2% [ 256 ]'
+	>>> parse_data("\x{2b}\x{30}\x{36}\x{31}\x{39}\x{20}\x{34}\x{01}\x{00}\x{08}\x{20}\x{06}");
+	'continuity-test 61.9 61.9 Ohm 6% [ 256 ]'
+	>>> parse_data("\x{2b}\x{30}\x{38}\x{33}\x{39}\x{20}\x{34}\x{01}\x{00}\x{08}\x{20}\x{08}");
+	'continuity-test 83.9 83.9 Ohm 8% [ 256 ]'
+
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{30}\x{20}\x{31}\x{00}\x{00}\x{04}\x{80}\x{00}");
+	'diode-test 0 0 V 0% [ 0 ]'
+	>>> parse_data("\x{2b}\x{31}\x{38}\x{34}\x{32}\x{20}\x{31}\x{00}\x{00}\x{04}\x{80}\x{00}");
+	'diode-test 1.842 1.842 V 0% [ 0 ]'
 
 =cut
 
