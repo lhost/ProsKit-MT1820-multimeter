@@ -105,6 +105,16 @@ my $unit_map	= {
 		symbol	=> 'MHz',
 		factor	=> 1E6,
 	},
+	0x0004	=> {
+		unit	=> 'capacitance',
+		symbol	=> 'nF',
+		factor	=> 1E-9,
+	},
+	0x8004	=> {
+		unit	=> 'capacitance',
+		symbol	=> 'μF',
+		factor	=> 1E-6,
+	},
 };
 
 my $flags_map = {
@@ -250,6 +260,18 @@ my $flags_map = {
 	>>> parse_data("\x{2b}\x{31}\x{36}\x{39}\x{34}\x{20}\x{34}\x{20}\x{00}\x{20}\x{08}\x{3d}");
 	'frequency 169400 169.4 kHz 61% [ 8192 ]'
 
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{32}\x{35}\x{20}\x{32}\x{20}\x{02}\x{00}\x{04}\x{00}");
+	'capacitance 2.5e-10 0.25 nF 0% [ 8194 ]'
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{34}\x{37}\x{20}\x{32}\x{20}\x{02}\x{00}\x{04}\x{00}");
+	'capacitance 4.7e-10 0.47 nF 0% [ 8194 ]'
+	>>> parse_data("\x{2b}\x{30}\x{33}\x{30}\x{39}\x{20}\x{32}\x{20}\x{02}\x{00}\x{04}\x{00}");
+	'capacitance 3.09e-09 3.09 nF 0% [ 8194 ]'
+	>>> parse_data("\x{2b}\x{30}\x{39}\x{31}\x{39}\x{20}\x{34}\x{20}\x{02}\x{00}\x{04}\x{00}");
+	'capacitance 9.19e-08 91.9 nF 0% [ 8194 ]'
+	>>> parse_data("\x{2b}\x{32}\x{34}\x{38}\x{31}\x{20}\x{34}\x{20}\x{00}\x{80}\x{04}\x{00}");
+	'capacitance 0.0002481 248.1 μF 0% [ 8192 ]'
+	>>> parse_data("\x{2b}\x{30}\x{34}\x{37}\x{37}\x{20}\x{30}\x{20}\x{00}\x{80}\x{04}\x{3d}");
+	'capacitance 0.000477 477 μF 61% [ 8192 ]'
 
 =cut
 
@@ -296,6 +318,13 @@ sub parse_data {
 		) {
 			$decimal_point = 3;
 		}
+
+		if ($unit == 0x8004) { # This condition is only for sure
+			# capacitance measurement: in Faraday mode with μF units
+			# $decimal_point returned by multimeter is zero. Needs to be fixed.
+			$decimal_point ||= 4;
+		}
+
 		# add decimal point and convert to float number
 		my $value = 0.0 + (
 			substr( $string_value, 0, 1 )    # sign '+' or '-'

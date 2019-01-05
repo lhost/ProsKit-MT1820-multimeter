@@ -48,11 +48,11 @@ Connect your multimeter [Pro'sKit MT-1820](https://www.prokits.com.tw/Product/MT
 | Frequency		| 100kHz	| Y			|
 | Frequency		| 1MHz		| TBD		|
 | Frequency		| 30MHz		| TBD		|
-| Capacitance	| 40nF		| 			|
-| Capacitance	| 400nF		| 			|
-| Capacitance	| 4μF		| 			|
-| Capacitance	| 40μF		| 			|
-| Capacitance	| 200μF		| 			|
+| Capacitance	| 40nF		| Y			|
+| Capacitance	| 400nF		| Y			|
+| Capacitance	| 4μF		| TBD		|
+| Capacitance	| 40μF		| TBD		|
+| Capacitance	| 200μF		| Y			|
 | Temperature	| -20˚C		| 			|
 | Temperature	| 0˚C		| 			|
 | Temperature	| 20˚C		| Y			|
