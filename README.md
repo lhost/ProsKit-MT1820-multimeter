@@ -64,8 +64,8 @@ Connect your multimeter [Pro'sKit MT-1820](https://www.prokits.com.tw/Product/MT
 | Temperature	| 750˚F		| 			|
 | Continuity with buzzer|	| Y			|
 | Diode test		| 		| Y			|
-| Transistor test	| NPN	| 			|
-| Transistor test	| PNP	| 			|
+| Transistor test	| NPN	| Y			|
+| Transistor test	| PNP	| Y			|
 
 
 - **TBD** - To Be Done

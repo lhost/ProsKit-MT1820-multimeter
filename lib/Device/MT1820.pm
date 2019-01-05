@@ -115,6 +115,11 @@ my $unit_map	= {
 		symbol	=> 'μF',
 		factor	=> 1E-6,
 	},
+	0x0010	=> {
+		unit	=> 'transistor-test',
+		symbol	=> 'hFE',
+		factor	=> 1,
+	},
 };
 
 my $flags_map = {
@@ -273,6 +278,11 @@ my $flags_map = {
 	>>> parse_data("\x{2b}\x{30}\x{34}\x{37}\x{37}\x{20}\x{30}\x{20}\x{00}\x{80}\x{04}\x{3d}");
 	'capacitance 0.000477 477 μF 61% [ 8192 ]'
 
+	>>> parse_data("\x{2b}\x{30}\x{30}\x{30}\x{30}\x{20}\x{30}\x{00}\x{00}\x{00}\x{10}\x{00}");
+	'transistor-test 0 0 hFE 0% [ 0 ]'
+	>>> parse_data("\x{2b}\x{30}\x{32}\x{39}\x{33}\x{20}\x{30}\x{00}\x{00}\x{00}\x{10}\x{00}");
+	'transistor-test 293 293 hFE 0% [ 0 ]'
+
 =cut
 
 sub parse_data {
@@ -319,11 +329,12 @@ sub parse_data {
 			$decimal_point = 3;
 		}
 
-		if ($unit == 0x8004) { # This condition is only for sure
-			# capacitance measurement: in Faraday mode with μF units
-			# $decimal_point returned by multimeter is zero. Needs to be fixed.
-			$decimal_point ||= 4;
-		}
+		# $decimal_point returned by multimeter is zero in 2 cases
+		# and need to be fixed:
+		#
+		# - capacitance measurement: in Faraday mode with μF units ($unit == 0x8004)
+		# - transistor test (hFE) ($unit == 0x0010)
+		$decimal_point ||= 4;
 
 		# add decimal point and convert to float number
 		my $value = 0.0 + (
