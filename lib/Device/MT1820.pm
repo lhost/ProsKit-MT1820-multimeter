@@ -6,128 +6,128 @@ use warnings;
 
 our $VERSION = '0.01';
 
-our @ISA = qw(Exporter);
+our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw( parse_data );
 
 use vars qw( $DEBUG );
 
 $DEBUG = 0;
 
-use constant UNIT_hFE => 0x0010;
-use constant UNIT_mV => 0x4080;
-use constant UNIT_V => 0x0080;
-use constant UNIT_Ohm => 0x0020;
-use constant UNIT_kOhm => 0x2020;
-use constant UNIT_MOhm => 0x1020;
+use constant UNIT_hFE     => 0x0010;
+use constant UNIT_mV      => 0x4080;
+use constant UNIT_V       => 0x0080;
+use constant UNIT_Ohm     => 0x0020;
+use constant UNIT_kOhm    => 0x2020;
+use constant UNIT_MOhm    => 0x1020;
 use constant UNIT_DIODE_V => 0x0480;
-use constant UNIT_F => 0x0004;
-use constant UNIT_Hz => 0x0008;
+use constant UNIT_F       => 0x0004;
+use constant UNIT_Hz      => 0x0008;
 use constant UNIT_DUTY_Hz => 0x0200;
-use constant UNIT_C => 0x0002;
-use constant UNIT_uA => 0x8040;
-use constant UNIT_mA => 0x4040;
-use constant UNIT_A => 0x0040;
+use constant UNIT_C       => 0x0002;
+use constant UNIT_uA      => 0x8040;
+use constant UNIT_mA      => 0x4040;
+use constant UNIT_A       => 0x0040;
 
 # with help from https://github.com/drahoslavzan/ProsKit-MT1820-Probe/blob/master/proskit.cc#L28
-my $unit_map	= {
-	0x0020	=> {
-		unit	=> 'resistance',
-		symbol	=> 'Ohm',
-		factor	=> 1,
+my $unit_map = {
+	0x0020 => {
+		unit   => 'resistance',
+		symbol => 'Ohm',
+		factor => 1,
 	},
-	0x2020	=> {
-		unit	=> 'resistance',
-		symbol	=> 'kOhm',
-		factor	=> 1E3,
+	0x2020 => {
+		unit   => 'resistance',
+		symbol => 'kOhm',
+		factor => 1E3,
 	},
-	0x1020	=> {
-		unit	=> 'resistance',
-		symbol	=> 'MOhm',
-		factor	=> 1E6,
+	0x1020 => {
+		unit   => 'resistance',
+		symbol => 'MOhm',
+		factor => 1E6,
 	},
-	0x0002	=> {
-		unit	=> 'temperature',
-		symbol	=> '˚C',
-		factor	=> 1,
+	0x0002 => {
+		unit   => 'temperature',
+		symbol => '˚C',
+		factor => 1,
 	},
-	0x0001	=> {
-		unit	=> 'temperature',
-		symbol	=> '˚F',
-		factor	=> 1,
+	0x0001 => {
+		unit   => 'temperature',
+		symbol => '˚F',
+		factor => 1,
 	},
-	0x4080	=> {
-		unit	=> 'voltage',
-		symbol	=> 'mV',
-		factor	=> 1E-3,
+	0x4080 => {
+		unit   => 'voltage',
+		symbol => 'mV',
+		factor => 1E-3,
 	},
-	0x0080	=> {
-		unit	=> 'voltage',
-		symbol	=> 'V',
-		factor	=> 1,
+	0x0080 => {
+		unit   => 'voltage',
+		symbol => 'V',
+		factor => 1,
 	},
-	0x8040	=> {
-		unit	=> 'current',
-		symbol	=> 'μA',
-		factor	=> 1E-6,
+	0x8040 => {
+		unit   => 'current',
+		symbol => 'μA',
+		factor => 1E-6,
 	},
-	0x4040	=> {
-		unit	=> 'current',
-		symbol	=> 'mA',
-		factor	=> 1E-3,
+	0x4040 => {
+		unit   => 'current',
+		symbol => 'mA',
+		factor => 1E-3,
 	},
-	0x0040	=> {
-		unit	=> 'current',
-		symbol	=> 'A',
-		factor	=> 1,
+	0x0040 => {
+		unit   => 'current',
+		symbol => 'A',
+		factor => 1,
 	},
-	0x0480	=> {
-		unit	=> 'diode-test',
-		symbol	=> 'V',
-		factor	=> 1,
+	0x0480 => {
+		unit   => 'diode-test',
+		symbol => 'V',
+		factor => 1,
 	},
-	0x0820	=> {
-		unit	=> 'continuity-test',
-		symbol	=> 'Ohm',
-		factor	=> 1,
+	0x0820 => {
+		unit   => 'continuity-test',
+		symbol => 'Ohm',
+		factor => 1,
 	},
-	0x0008	=> {
-		unit	=> 'frequency',
-		symbol	=> 'Hz',
-		factor	=> 1,
+	0x0008 => {
+		unit   => 'frequency',
+		symbol => 'Hz',
+		factor => 1,
 	},
-	0x2008	=> {
-		unit	=> 'frequency',
-		symbol	=> 'kHz',
-		factor	=> 1E3,
+	0x2008 => {
+		unit   => 'frequency',
+		symbol => 'kHz',
+		factor => 1E3,
 	},
-	0x1008	=> { # TODO: test frequency measurement for MHz signal
-		unit	=> 'frequency',
-		symbol	=> 'MHz',
-		factor	=> 1E6,
+	0x1008 => {    # TODO: test frequency measurement for MHz signal
+		unit   => 'frequency',
+		symbol => 'MHz',
+		factor => 1E6,
 	},
-	0x0004	=> {
-		unit	=> 'capacitance',
-		symbol	=> 'nF',
-		factor	=> 1E-9,
+	0x0004 => {
+		unit   => 'capacitance',
+		symbol => 'nF',
+		factor => 1E-9,
 	},
-	0x8004	=> {
-		unit	=> 'capacitance',
-		symbol	=> 'μF',
-		factor	=> 1E-6,
+	0x8004 => {
+		unit   => 'capacitance',
+		symbol => 'μF',
+		factor => 1E-6,
 	},
-	0x0010	=> {
-		unit	=> 'transistor-test',
-		symbol	=> 'hFE',
-		factor	=> 1,
+	0x0010 => {
+		unit   => 'transistor-test',
+		symbol => 'hFE',
+		factor => 1,
 	},
 };
 
 my $flags_map = {
-	0x2900	=> {
-		desc	=> 'AC', # alternating current
+	0x2900 => {
+		desc => 'AC',    # alternating current
 	},
-	0x3100	=> {
-		desc	=> 'DC', # direct current
+	0x3100 => {
+		desc => 'DC',    # direct current
 	},
 };
 
@@ -297,7 +297,8 @@ sub parse_data {
 # 		07 - 08  Flags 08 only in Farrad maybe belong to unit -  AC / DC indicator
 # 		09 - 10  Unit, byte is 09 scale factor (u,m,M) of unit on byte 10
 # 		11       Meter at bottom of display, signed value
-	$doctest = join('', ">>> parse_data(\"",
+	$doctest = join( '',
+		">>> parse_data(\"",
 		( map { "\\x{" . unpack("H*") . "}" } split( //, $data ) ),
 		"\");"
 	);
@@ -306,7 +307,7 @@ sub parse_data {
 	}
 
 	my ( $string_value, $_space, $decimal_point, $flags, $unit, $meter )
-	= unpack( 'A5 A1 A1 n n c', $data );
+		= unpack( 'A5 A1 A1 n n c', $data );
 
 #	use Data::Dumper;
 #	$Data::Dumper::Useqq = 1;
@@ -316,16 +317,15 @@ sub parse_data {
 #	print Dumper( [ $unit,  $unit_map->{$unit} ] );
 	if ( substr( $data, 0, 2 ) eq '+?' ) {
 		my $rv = "undefined data '$string_value'";
-		return wantarray ? ($rv, $doctest) : $rv;
+		return wantarray ? ( $rv, $doctest ) : $rv;
 	}
 	else {
 		if ($decimal_point == 4
-				and ( substr( $data, 0, 2 ) eq '+0'
-					or substr( $data, 0, 2 ) eq '-0'
-					or 0.0 + $string_value > 1000.0
-					or 0.0 + $string_value < -1000.0
-				)
-		) {
+			and (  substr( $data, 0, 2 ) eq '+0'
+				or substr( $data, 0, 2 ) eq '-0'
+				or 0.0 + $string_value > 1000.0
+				or 0.0 + $string_value < -1000.0 )
+			) {
 			$decimal_point = 3;
 		}
 
@@ -347,16 +347,14 @@ sub parse_data {
 
 		unless ($vm) {
 			my $rv = "undefined measurement '$string_value', unit = $unit";
-			return wantarray ? ($rv, $doctest) : $rv;
+			return wantarray ? ( $rv, $doctest ) : $rv;
 		}
-		my $rv = $vm->{unit} . (
-			$fm ? "-$fm->{desc} " : ' '
-			)
+		my $rv = $vm->{unit}
+			. ( $fm ? "-$fm->{desc} " : ' ' )
 			. $value * $vm->{factor}
 			. " $value $vm->{symbol} $meter% [ "
-				. ($fm->{desc} || $flags)
-			. " ]";
-		return wantarray ? ($rv, $doctest) : $rv;
+			. ( $fm->{desc} || $flags ) . " ]";
+		return wantarray ? ( $rv, $doctest ) : $rv;
 	}
 }
 

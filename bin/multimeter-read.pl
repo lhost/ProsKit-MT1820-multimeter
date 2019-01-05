@@ -13,9 +13,9 @@ use lib "$FindBin::Bin/../lib";
 
 use Device::MT1820 qw( parse_data );
 
-use constant PROTOCOL_LENGTH => 14;
+use constant PROTOCOL_LENGTH    => 14;
 use constant PROTOCOL_SEPARATOR => "\r\n";
-use constant SEPARATOR_LENGTH => 2;
+use constant SEPARATOR_LENGTH   => 2;
 
 use vars qw(
 	$VERSION
@@ -26,31 +26,30 @@ use vars qw(
 );
 
 $VERSION = 0.1;
-$DEBUG = 0;
-$help = $verbose = '';
+$DEBUG   = 0;
+$help    = $verbose = '';
 
 my $rv = GetOptions(
-	'd|debug'		=> \$DEBUG,
-	'D|device=s'	=> \$device,
-	'help'		=> \$help,
-	'man'		=> \$man,
-	'verbose'	=> \$verbose,
-	's|stat'	=> \$stat,
-) or pod2usage({ q(-verbose) => 1, q(-message) => 'ERROR: Invalid parameter' } );
+	'd|debug'    => \$DEBUG,
+	'D|device=s' => \$device,
+	'help'       => \$help,
+	'man'        => \$man,
+	'verbose'    => \$verbose,
+	's|stat'     => \$stat,
+) or pod2usage( { q(-verbose) => 1, q(-message) => 'ERROR: Invalid parameter' } );
 
-
-pod2usage(-exitval => 0, -verbose => 1) if ($help);
-pod2usage(-exitval => 0, -verbose => 2) if ($man);
+pod2usage( -exitval => 0, -verbose => 1 ) if ($help);
+pod2usage( -exitval => 0, -verbose => 2 ) if ($man);
 
 $Device::MT1820::DEBUG = $DEBUG;
 
 $device ||= $ARGV[0] || ( $OSNAME eq 'MSWin32' ? 'COM1' : '/dev/ttyUSB0' );
 
-if ($OSNAME eq 'MSWin32') {
+if ( $OSNAME eq 'MSWin32' ) {
 	require Win32::SerialPort;
 	$port = Win32::SerialPort->new($device);
 }
-elsif ($OSNAME eq 'linux') {
+elsif ( $OSNAME eq 'linux' ) {
 	require Device::SerialPort;
 	$port = Device::SerialPort->new($device);
 }
@@ -59,13 +58,13 @@ unless ($port) {
 	die "Can't open device '$device': $!";
 }
 
-$port->baudrate(2400); # Configure this to match your device
+$port->baudrate(2400);    # Configure this to match your device
 $port->databits(8);
 $port->parity("none");
 $port->stopbits(1);
 $port->debug($DEBUG) if ($DEBUG);
 
-sub timestr {    # {{{
+sub timestr {             # {{{
 	my $sec  = Time::HiRes::time();
 	my @cas  = localtime($sec);
 	my $text = sprintf(
@@ -79,50 +78,50 @@ sub timestr {    # {{{
 
 if ($stat) {
 	$Data::Dumper::Sortkeys = 1;
-	$stat = {}; # change from scalar to hash. Ugly hack
+	$stat                   = {};    # change from scalar to hash. Ugly hack
 }
 
 my $buffer = '';
 
 # skip first incomplete data
 while (1) {
-	my ($count_in, $string_in) = $port->read(PROTOCOL_LENGTH);
-	die "Read error: $!" unless defined ($string_in);
+	my ( $count_in, $string_in ) = $port->read(PROTOCOL_LENGTH);
+	die "Read error: $!" unless defined($string_in);
 	$buffer .= $string_in;
-	my $skip = index($buffer, PROTOCOL_SEPARATOR);
-	if (length($buffer) >= PROTOCOL_LENGTH and $skip > 0) {
-		$skip += SEPARATOR_LENGTH; # remove "\r\n" sequence too
+	my $skip = index( $buffer, PROTOCOL_SEPARATOR );
+	if ( length($buffer) >= PROTOCOL_LENGTH and $skip > 0 ) {
+		$skip += SEPARATOR_LENGTH;    # remove "\r\n" sequence too
 		print "# $skip bytes ignored\n" if ($DEBUG);
-		$buffer = substr($buffer, $skip);
+		$buffer = substr( $buffer, $skip );
 		last;
 	}
 }
 
 while (1) {
-	  my ($count_in, $string_in) = $port->read(PROTOCOL_LENGTH);
-	  die "Read error: $!" unless defined ($string_in);
-	  $buffer .= $string_in;
-	  if (length($buffer) >= PROTOCOL_LENGTH) {
-		  my $data = substr($buffer, 0, PROTOCOL_LENGTH - SEPARATOR_LENGTH);
-		  $buffer = substr($buffer, PROTOCOL_LENGTH);
+	my ( $count_in, $string_in ) = $port->read(PROTOCOL_LENGTH);
+	die "Read error: $!" unless defined($string_in);
+	$buffer .= $string_in;
+	if ( length($buffer) >= PROTOCOL_LENGTH ) {
+		my $data = substr( $buffer, 0, PROTOCOL_LENGTH - SEPARATOR_LENGTH );
+		$buffer = substr( $buffer, PROTOCOL_LENGTH );
 
-		  if ($stat) {
-			  my ($parsed_data, $encoded_data) = parse_data($data);
-			  $stat->{$encoded_data} ||= { count => 0, output => $parsed_data };
-			  $stat->{$encoded_data}->{count} += 1;
-			  print Dumper($stat);
-		  }
-		  else {
-			  my $parsed_data = parse_data($data);
-			  my $time = timestr();
-			  print STDERR "'$parsed_data'\n" if ($DEBUG);
-			  print "$time $parsed_data\n";
-		  }
+		if ($stat) {
+			my ( $parsed_data, $encoded_data ) = parse_data($data);
+			$stat->{$encoded_data} ||= { count => 0, output => $parsed_data };
+			$stat->{$encoded_data}->{count} += 1;
+			print Dumper($stat);
+		}
+		else {
+			my $parsed_data = parse_data($data);
+			my $time        = timestr();
+			print STDERR "'$parsed_data'\n" if ($DEBUG);
+			print "$time $parsed_data\n";
+		}
 
-	  }
-	  else {
-		  usleep(1000000);
-	  }
+	}
+	else {
+		usleep(1000000);
+	}
 }
 
 __END__
