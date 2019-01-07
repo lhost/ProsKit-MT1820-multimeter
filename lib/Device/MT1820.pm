@@ -131,6 +131,7 @@ my $flags_map = {
 	},
 };
 
+=encoding utf8
 =head1 parse_data
 
 	decode binary data to readable format
